@@ -891,10 +891,10 @@ class SAFDRoster {
                         <div class="footer-content">
                             <p><strong>Document Information:</strong></p>
                             <ul>
-                                <li>Version: SAFD-SOP-v2.1</li>
-                                <li>Effective Date: March 1, 2026</li>
-                                <li>Next Review: March 1, 2027</li>
-                                <li>Approved by: Fire Chief Michael Rodriguez</li>
+                                <li>Version: SAFD-SOP-v1.0</li>
+                                <li>Effective Date: March 2, 2026</li>
+                                <li>Next Review: May 1, 2026</li>
+                                <li>Approved by: Fire Chief Sam Harlow</li>
                             </ul>
                             <p class="classification"><strong>Classification:</strong> Internal Use Only - Confidential</p>
                             <p class="disclaimer">This document contains confidential operational information. Distribution is limited to SAFD personnel and authorized agencies.</p>
