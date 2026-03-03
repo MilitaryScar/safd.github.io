@@ -721,9 +721,7 @@ class SAFDRoster {
                         <h3><i class="fas fa-car"></i> Emergency Vehicle Operation and Speed Guidelines</h3>
                         
                         <div class="sop-subsection">
-                            <p>Members of the San Andreas Fire Department shall operate all emergency vehicles with caution, professionalism, and awareness of public safety while responding to incidents throughout the state.</p>
-                            
-                            <p>Personnel operating command vehicles or apparatus authorized by a Lieutenant or higher ranking officer shall not exceed ninety miles per hour while traveling on highways or major roadways.</p>
+                            <p>Personnel operating command vehicles or apparatus responding on highways or major roadways shall not exceed ninety miles per hour unless permission has been granted by a superior officer above the rank of Lieutenant.</p>
                             
                             <p>When operating on standard city streets and normal roadways, emergency vehicles shall not exceed seventy miles per hour during response.</p>
                             
