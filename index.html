@@ -50,6 +50,7 @@
             <!-- Tabs -->
             <nav class="tabs">
                 <button class="tab active" data-tab="roster">Roster</button>
+                <button class="tab" data-tab="vehicles">Vehicles</button>
                 <button class="tab" data-tab="sop">SOP Document</button>
             </nav>
 
@@ -85,6 +86,30 @@
 
                     <div class="roster-grid" id="roster-grid">
                         <!-- Members will be displayed here -->
+                    </div>
+                </div>
+
+                <!-- Vehicles Tab -->
+                <div class="tab-panel" id="vehicles-tab">
+                    <div class="controls">
+                        <div class="search-filter">
+                            <div class="search">
+                                <i class="fas fa-search"></i>
+                                <input type="text" id="vehicle-search" placeholder="Search vehicles...">
+                            </div>
+                        </div>
+                        <div class="actions">
+                            <button id="add-vehicle" class="btn primary">
+                                <i class="fas fa-plus"></i> Add Vehicle
+                            </button>
+                            <button id="export-vehicles" class="btn secondary">
+                                <i class="fas fa-download"></i> Export
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="vehicles-grid" id="vehicles-grid">
+                        <!-- Vehicles will be displayed here -->
                     </div>
                 </div>
 
@@ -158,6 +183,49 @@
                 </div>
                 <div class="form-actions">
                     <button type="button" class="btn secondary" id="cancel">Cancel</button>
+                    <button type="submit" class="btn primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Vehicle Modal -->
+    <div class="modal" id="vehicle-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="vehicle-modal-title">Add Vehicle</h2>
+                <button class="close" id="close-vehicle-modal">&times;</button>
+            </div>
+            <form id="vehicle-form">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Vehicle Name *</label>
+                        <input type="text" id="vehicle-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Type *</label>
+                        <select id="vehicle-type" required>
+                            <option value="">Select Type</option>
+                            <option value="engine">Engine</option>
+                            <option value="truck">Truck</option>
+                            <option value="medic">Medic Unit</option>
+                            <option value="command">Command Vehicle</option>
+                            <option value="support">Support Vehicle</option>
+                        </select>
+                    </div>
+                    <div class="form-group full">
+                        <label>Allowed Ranks *</label>
+                        <div id="vehicle-ranks-container" class="ranks-checkboxes">
+                            <!-- Ranks will be populated here -->
+                        </div>
+                    </div>
+                    <div class="form-group full">
+                        <label>Notes</label>
+                        <textarea id="vehicle-notes" rows="3" placeholder="Additional vehicle information..."></textarea>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn secondary" id="vehicle-cancel">Cancel</button>
                     <button type="submit" class="btn primary">Save</button>
                 </div>
             </form>

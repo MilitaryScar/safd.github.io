@@ -2,9 +2,11 @@
 class SAFDRoster {
     constructor() {
         this.members = [];
+        this.vehicles = [];
         this.isAuthenticated = false;
         this.adminPassword = 'SAFD2024!';
         this.currentEditId = null;
+        this.currentVehicleEditId = null;
         
         // Initialize when DOM is ready
         if (document.readyState === 'loading') {
@@ -42,17 +44,27 @@ class SAFDRoster {
         this.ranks = [
             { id: 'fire_chief', name: 'Fire Chief', level: 1, icon: '👨‍🚒', category: 'command' },
             { id: 'deputy_chief', name: 'Deputy Chief', level: 2, icon: '👨‍✈️', category: 'command' },
-            { id: 'battalion_chief', name: 'Battalion Chief', level: 3, icon: '🔥', category: 'command' },
-            { id: 'captain', name: 'Captain', level: 4, icon: '⭐', category: 'leadership' },
-            { id: 'lieutenant', name: 'Lieutenant', level: 5, icon: '🎖️', category: 'leadership' },
-            { id: 'firefighter_paramedic', name: 'Firefighter/Paramedic', level: 6, icon: '🚑', category: 'operations' },
-            { id: 'firefighter_engineer', name: 'Firefighter/Engineer', level: 6, icon: '🔧', category: 'operations' },
-            { id: 'firefighter', name: 'Firefighter', level: 7, icon: '👨‍🚒', category: 'operations' },
-            { id: 'reserve_firefighter', name: 'Reserve Firefighter', level: 8, icon: '🤝', category: 'operations' },
-            { id: 'volunteer_firefighter', name: 'Volunteer Firefighter', level: 8, icon: '🙏', category: 'support' },
-            { id: 'probationary_firefighter', name: 'Probationary Firefighter', level: 9, icon: '🆕', category: 'support' },
-            { id: 'cadet', name: 'Cadet', level: 10, icon: '🎓', category: 'support' }
+            { id: 'assistant_chief', name: 'Assistant Chief', level: 3, icon: '⭐', category: 'command' },
+            { id: 'battalion_chief', name: 'Battalion Chief', level: 4, icon: '🔥', category: 'command' },
+            { id: 'captain', name: 'Captain', level: 5, icon: '⭐', category: 'leadership' },
+            { id: 'lieutenant', name: 'Lieutenant', level: 6, icon: '🎖️', category: 'leadership' },
+            { id: 'firefighter_paramedic', name: 'Firefighter/Paramedic', level: 7, icon: '🚑', category: 'operations' },
+            { id: 'firefighter_engineer', name: 'Firefighter/Engineer', level: 7, icon: '🔧', category: 'operations' },
+            { id: 'firefighter', name: 'Firefighter', level: 8, icon: '👨‍🚒', category: 'operations' },
+            { id: 'reserve_firefighter', name: 'Reserve Firefighter', level: 9, icon: '🤝', category: 'operations' },
+            { id: 'volunteer_firefighter', name: 'Volunteer Firefighter', level: 10, icon: '🙏', category: 'support' },
+            { id: 'probationary_firefighter', name: 'Probationary Firefighter', level: 11, icon: '🆕', category: 'support' },
+            { id: 'cadet', name: 'Cadet', level: 12, icon: '🎓', category: 'support' }
         ];
+
+        // Vehicle types
+        this.vehicleTypes = {
+            engine: { name: 'Engine', icon: '🚒', description: 'Fire suppression apparatus' },
+            truck: { name: 'Truck', icon: '🚛', description: 'Aerial and rescue apparatus' },
+            medic: { name: 'Medic Unit', icon: '🚑', description: 'Emergency medical services' },
+            command: { name: 'Command Vehicle', icon: '🚙', description: 'Incident command and supervision' },
+            support: { name: 'Support Vehicle', icon: '🚐', description: 'Special operations and logistics' }
+        };
 
         // Rank categories
         this.rankCategories = {
@@ -93,6 +105,7 @@ class SAFDRoster {
 
         // Populate dropdowns
         this.populateDropdowns();
+        this.populateVehicleDropdowns();
     }
 
     populateDropdowns() {
@@ -118,6 +131,34 @@ class SAFDRoster {
         }
     }
 
+    populateVehicleDropdowns() {
+        // Vehicle type dropdown
+        const vehicleTypeSelect = document.getElementById('vehicle-type');
+        if (vehicleTypeSelect) {
+            vehicleTypeSelect.innerHTML = '<option value="">Select Type</option>' +
+                Object.entries(this.vehicleTypes).map(([id, type]) => 
+                    `<option value="${id}">${type.icon} ${type.name}</option>`
+                ).join('');
+        }
+
+        // Populate rank checkboxes for vehicle permissions
+        this.populateRankCheckboxes();
+    }
+
+    populateRankCheckboxes() {
+        const container = document.getElementById('vehicle-ranks-container');
+        if (!container) return;
+
+        container.innerHTML = this.ranks.map(rank => `
+            <div class="rank-checkbox">
+                <input type="checkbox" id="rank-${rank.id}" value="${rank.id}">
+                <label for="rank-${rank.id}">
+                    ${rank.icon} ${rank.name}
+                </label>
+            </div>
+        `).join('');
+    }
+
     bindEvents() {
         // Tab switching
         document.querySelectorAll('.tab').forEach(tab => {
@@ -129,6 +170,9 @@ class SAFDRoster {
         document.getElementById('rank-filter')?.addEventListener('change', () => this.render());
         document.getElementById('status-filter')?.addEventListener('change', () => this.render());
 
+        // Vehicle search
+        document.getElementById('vehicle-search')?.addEventListener('input', () => this.renderVehicles());
+
         // Actions
         document.getElementById('add-member')?.addEventListener('click', () => {
             this.requireAuth(() => this.openModal());
@@ -136,10 +180,22 @@ class SAFDRoster {
 
         document.getElementById('export')?.addEventListener('click', () => this.exportData());
 
+        // Vehicle actions
+        document.getElementById('add-vehicle')?.addEventListener('click', () => {
+            this.requireAuth(() => this.openVehicleModal());
+        });
+
+        document.getElementById('export-vehicles')?.addEventListener('click', () => this.exportVehicles());
+
         // Modal events
         document.getElementById('close-modal')?.addEventListener('click', () => this.closeModal());
         document.getElementById('cancel')?.addEventListener('click', () => this.closeModal());
         document.getElementById('member-form')?.addEventListener('submit', (e) => this.handleSubmit(e));
+
+        // Vehicle modal events
+        document.getElementById('close-vehicle-modal')?.addEventListener('click', () => this.closeVehicleModal());
+        document.getElementById('vehicle-cancel')?.addEventListener('click', () => this.closeVehicleModal());
+        document.getElementById('vehicle-form')?.addEventListener('submit', (e) => this.handleVehicleSubmit(e));
 
         // Auth events
         document.getElementById('auth-btn')?.addEventListener('click', () => this.toggleAuth());
@@ -150,6 +206,10 @@ class SAFDRoster {
         // Close modals on outside click
         document.getElementById('member-modal')?.addEventListener('click', (e) => {
             if (e.target.id === 'member-modal') this.closeModal();
+        });
+
+        document.getElementById('vehicle-modal')?.addEventListener('click', (e) => {
+            if (e.target.id === 'vehicle-modal') this.closeVehicleModal();
         });
         
         document.getElementById('auth-modal')?.addEventListener('click', (e) => {
@@ -168,9 +228,11 @@ class SAFDRoster {
             panel.classList.toggle('active', panel.id === `${tabName}-tab`);
         });
 
-        // Load SOP content if needed
+        // Load content if needed
         if (tabName === 'sop') {
             this.loadSOP();
+        } else if (tabName === 'vehicles') {
+            this.renderVehicles();
         }
     }
 
@@ -905,6 +967,255 @@ class SAFDRoster {
         }, 1000);
     }
 
+    // Vehicle Management Methods
+    renderVehicles() {
+        const vehiclesGrid = document.getElementById('vehicles-grid');
+        if (!vehiclesGrid) return;
+
+        const filteredVehicles = this.getFilteredVehicles();
+
+        if (filteredVehicles.length === 0) {
+            vehiclesGrid.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-truck"></i>
+                    <h3>No Vehicles Found</h3>
+                    <p>No vehicles match your current filters.</p>
+                    <button class="btn primary" onclick="roster.requireAuth(() => roster.openVehicleModal())">
+                        <i class="fas fa-plus"></i> Add First Vehicle
+                    </button>
+                </div>
+            `;
+            return;
+        }
+
+        vehiclesGrid.innerHTML = filteredVehicles.map(vehicle => this.createVehicleCard(vehicle)).join('');
+    }
+
+    getFilteredVehicles() {
+        const searchTerm = document.getElementById('vehicle-search')?.value.toLowerCase() || '';
+
+        return this.vehicles.filter(vehicle => {
+            const matchesSearch = !searchTerm || 
+                vehicle.name?.toLowerCase().includes(searchTerm) ||
+                vehicle.notes?.toLowerCase().includes(searchTerm);
+
+            return matchesSearch;
+        });
+    }
+
+    createVehicleCard(vehicle) {
+        const type = this.vehicleTypes[vehicle.type];
+        const isReadOnly = !this.isAuthenticated;
+
+        const allowedRanks = vehicle.allowedRanks || [];
+        const rankNames = allowedRanks.map(rankId => {
+            const rank = this.ranks.find(r => r.id === rankId);
+            return rank ? `${rank.icon} ${rank.name}` : rankId;
+        }).join(', ');
+
+        return `
+            <div class="vehicle-card ${isReadOnly ? 'read-only' : ''}">
+                <div class="vehicle-header">
+                    <div class="vehicle-title">
+                        <h3>${this.escapeHtml(vehicle.name)}</h3>
+                        <div class="vehicle-info">
+                            <span class="badge badge-type">${type ? `${type.icon} ${type.name}` : 'Unknown'}</span>
+                        </div>
+                    </div>
+                    <div class="vehicle-type-icon">
+                        ${type ? type.icon : '🚗'}
+                    </div>
+                </div>
+                <div class="vehicle-details">
+                    <div class="detail-item">
+                        <i class="fas fa-user-shield"></i>
+                        <span><strong>Allowed Ranks:</strong> ${rankNames || 'None specified'}</span>
+                    </div>
+                    ${vehicle.notes ? `
+                    <div class="detail-item full">
+                        <i class="fas fa-sticky-note"></i>
+                        <span>${this.escapeHtml(vehicle.notes)}</span>
+                    </div>
+                    ` : ''}
+                </div>
+                <div class="vehicle-actions">
+                    <button onclick="roster.requireAuth(() => roster.openVehicleModal('${vehicle.id}'))" ${isReadOnly ? 'disabled' : ''}>
+                        <i class="fas fa-edit"></i> Edit
+                    </button>
+                    <button onclick="roster.requireAuth(() => roster.deleteVehicle('${vehicle.id}'))" ${isReadOnly ? 'disabled' : ''}>
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
+                </div>
+            </div>
+        `;
+    }
+
+    openVehicleModal(vehicleId = null) {
+        const modal = document.getElementById('vehicle-modal');
+        const form = document.getElementById('vehicle-form');
+        const title = document.getElementById('vehicle-modal-title');
+
+        this.currentVehicleEditId = vehicleId;
+
+        if (vehicleId) {
+            const vehicle = this.vehicles.find(v => v.id === vehicleId);
+            if (vehicle) {
+                title.textContent = 'Edit Vehicle';
+                this.populateVehicleForm(vehicle);
+            }
+        } else {
+            title.textContent = 'Add Vehicle';
+            form.reset();
+        }
+
+        modal.classList.add('active');
+    }
+
+    closeVehicleModal() {
+        const modal = document.getElementById('vehicle-modal');
+        modal.classList.remove('active');
+        this.currentVehicleEditId = null;
+    }
+
+    populateVehicleForm(vehicle) {
+        const form = document.getElementById('vehicle-form');
+        
+        // Populate text and select fields
+        Object.keys(vehicle).forEach(key => {
+            const input = form.querySelector(`#vehicle-${key}`);
+            if (input) {
+                input.value = vehicle[key] || '';
+            }
+        });
+
+        // Populate rank checkboxes
+        const allowedRanks = vehicle.allowedRanks || [];
+        this.ranks.forEach(rank => {
+            const checkbox = form.querySelector(`#rank-${rank.id}`);
+            if (checkbox) {
+                checkbox.checked = allowedRanks.includes(rank.id);
+            }
+        });
+    }
+
+    handleVehicleSubmit(e) {
+        e.preventDefault();
+
+        const formData = {
+            name: document.getElementById('vehicle-name').value,
+            type: document.getElementById('vehicle-type').value,
+            notes: document.getElementById('vehicle-notes').value
+        };
+
+        // Get allowed ranks from checkboxes
+        const allowedRanks = [];
+        this.ranks.forEach(rank => {
+            const checkbox = document.querySelector(`#rank-${rank.id}`);
+            if (checkbox && checkbox.checked) {
+                allowedRanks.push(rank.id);
+            }
+        });
+        formData.allowedRanks = allowedRanks;
+
+        // Validate
+        if (!formData.name || !formData.type) {
+            this.showToast('Please fill in all required fields', 'error');
+            return;
+        }
+
+        if (allowedRanks.length === 0) {
+            this.showToast('Please select at least one rank that can use this vehicle', 'error');
+            return;
+        }
+
+        if (this.currentVehicleEditId) {
+            this.updateVehicle(this.currentVehicleEditId, formData);
+        } else {
+            this.addVehicle(formData);
+        }
+
+        this.closeVehicleModal();
+    }
+
+    addVehicle(data) {
+        const vehicle = {
+            ...data,
+            id: this.generateId(),
+            createdAt: new Date().toISOString()
+        };
+
+        this.vehicles.push(vehicle);
+        this.saveVehicles();
+        this.renderVehicles();
+        this.showToast('Vehicle added successfully', 'success');
+    }
+
+    updateVehicle(vehicleId, data) {
+        const index = this.vehicles.findIndex(v => v.id === vehicleId);
+        if (index === -1) return;
+
+        this.vehicles[index] = {
+            ...this.vehicles[index],
+            ...data,
+            updatedAt: new Date().toISOString()
+        };
+
+        this.saveVehicles();
+        this.renderVehicles();
+        this.showToast('Vehicle updated successfully', 'success');
+    }
+
+    deleteVehicle(vehicleId) {
+        if (!confirm('Are you sure you want to delete this vehicle?')) return;
+
+        this.vehicles = this.vehicles.filter(v => v.id !== vehicleId);
+        this.saveVehicles();
+        this.renderVehicles();
+        this.showToast('Vehicle deleted successfully', 'success');
+    }
+
+    exportVehicles() {
+        try {
+            const dataStr = JSON.stringify(this.vehicles, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `safd_vehicles_${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+
+            URL.revokeObjectURL(url);
+            this.showToast('Vehicles exported successfully', 'success');
+        } catch (error) {
+            this.showToast('Error exporting vehicles', 'error');
+        }
+    }
+
+    // Storage methods for vehicles
+    loadVehicles() {
+        try {
+            const saved = localStorage.getItem('safd_vehicles');
+            if (saved) {
+                this.vehicles = JSON.parse(saved);
+            } else {
+                this.vehicles = [];
+            }
+        } catch (error) {
+            console.error('Error loading vehicles:', error);
+            this.vehicles = [];
+        }
+    }
+
+    saveVehicles() {
+        try {
+            localStorage.setItem('safd_vehicles', JSON.stringify(this.vehicles));
+        } catch (error) {
+            console.error('Error saving vehicles:', error);
+            this.showToast('Error saving vehicle data', 'error');
+        }
+    }
+
     // Authentication methods
     toggleAuth() {
         if (this.isAuthenticated) {
@@ -998,6 +1309,7 @@ class SAFDRoster {
             this.members = [];
         }
         
+        this.loadVehicles();
         this.checkAuth();
     }
 
