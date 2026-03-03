@@ -518,7 +518,7 @@ class SAFDRoster {
                     <div class="sop-header">
                         <h1><i class="fas fa-shield-alt"></i> San Andreas Fire Department</h1>
                         <h2>Standard Operating Procedures</h2>
-                        <p class="sop-version">Version 2.1 | Effective March 2026</p>
+                        <p class="sop-version">Version 1.0 | Effective March 2026</p>
                     </div>
 
                     <div class="sop-toc">
