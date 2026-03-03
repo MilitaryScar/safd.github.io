@@ -580,372 +580,218 @@ class SAFDRoster {
                     <div class="sop-header">
                         <h1><i class="fas fa-shield-alt"></i> San Andreas Fire Department</h1>
                         <h2>Standard Operating Procedures</h2>
-                        <p class="sop-version">Version 1.0 | Effective March 2026</p>
+                        <p class="sop-version">Official Department Manual</p>
                     </div>
 
                     <div class="sop-toc">
                         <h3><i class="fas fa-list"></i> Table of Contents</h3>
                         <ul>
-                            <li><a href="#chapter1">Chapter 1: General Policies</a></li>
-                            <li><a href="#chapter2">Chapter 2: Personnel Management</a></li>
-                            <li><a href="#chapter3">Chapter 3: Operations</a></li>
-                            <li><a href="#chapter4">Chapter 4: Emergency Medical Services</a></li>
-                            <li><a href="#chapter5">Chapter 5: Safety & Training</a></li>
-                            <li><a href="#chapter6">Chapter 6: Communications</a></li>
-                            <li><a href="#chapter7">Chapter 7: Vehicle Operations</a></li>
-                            <li><a href="#appendix">Appendix: Forms & Procedures</a></li>
+                            <li><a href="#department-overview">Department Overview</a></li>
+                            <li><a href="#department-mission">Department Mission</a></li>
+                            <li><a href="#command-staff">Command Staff Authority</a></li>
+                            <li><a href="#chain-of-command">Chain of Command</a></li>
+                            <li><a href="#duties-responsibilities">Duties and Responsibilities</a></li>
+                            <li><a href="#emergency-operations">Emergency Response Operations</a></li>
+                            <li><a href="#vehicle-operations">Emergency Vehicle Operation and Speed Guidelines</a></li>
+                            <li><a href="#training-division">Training Division</a></li>
+                            <li><a href="#activity-expectations">Activity and Service Expectations</a></li>
+                            <li><a href="#conduct-standards">Conduct and Professional Standards</a></li>
+                            <li><a href="#interagency-cooperation">Interagency Cooperation</a></li>
+                            <li><a href="#closing-statement">Closing Statement</a></li>
                         </ul>
                     </div>
 
-                    <div class="sop-section" id="chapter1">
-                        <h3><i class="fas fa-flag"></i> Chapter 1: General Policies</h3>
+                    <div class="sop-section" id="department-overview">
+                        <h3><i class="fas fa-building"></i> Department Overview</h3>
                         
                         <div class="sop-subsection">
-                            <h4>1.1 Department Mission & Vision</h4>
-                            <p>The San Andreas Fire Department is dedicated to preserving life, property, and the environment through professional fire protection, emergency medical services, and disaster response. We serve the community with courage, honor, and service.</p>
+                            <p>The San Andreas Fire Department is responsible for providing fire suppression, emergency medical services, rescue operations, disaster response, and public safety services throughout the state of San Andreas.</p>
                             
-                            <h4>1.2 Core Values</h4>
-                            <div class="values-grid">
-                                <div class="value-item">
-                                    <i class="fas fa-fire"></i>
-                                    <strong>Courage</strong>
-                                    <p>Face danger with bravery and determination</p>
-                                </div>
-                                <div class="value-item">
-                                    <i class="fas fa-shield-alt"></i>
-                                    <strong>Honor</strong>
-                                    <p>Maintain integrity and ethical conduct</p>
-                                </div>
-                                <div class="value-item">
-                                    <i class="fas fa-hands-helping"></i>
-                                    <strong>Service</strong>
-                                    <p>Commit to excellence in community service</p>
-                                </div>
-                                <div class="value-item">
-                                    <i class="fas fa-graduation-cap"></i>
-                                    <strong>Professionalism</strong>
-                                    <p>Uphold the highest standards</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="sop-subsection">
-                            <h4>1.3 Chain of Command</h4>
-                            <p>All personnel shall follow the established chain of command for communications and operations:</p>
-                            <ol>
-                                <li><strong>Fire Chief</strong> - Ultimate authority and department leadership</li>
-                                <li><strong>Deputy Chiefs</strong> - Division command and specialized operations</li>
-                                <li><strong>Battalion Chiefs</strong> - Battalion-level operations and supervision</li>
-                                <li><strong>Captains</strong> - Company command and station management</li>
-                                <li><strong>Lieutenants</strong> - Company operations and crew leadership</li>
-                            </ol>
-                        </div>
-
-                        <div class="sop-subsection">
-                            <h4>1.4 Code of Conduct</h4>
-                            <ul>
-                                <li>Maintain professional appearance and demeanor at all times</li>
-                                <li>Treat all citizens with respect and dignity</li>
-                                <li>Uphold department values and reputation</li>
-                                <li>Report any violations or misconduct immediately</li>
-                                <li>Adhere to all local, state, and federal laws</li>
-                            </ul>
+                            <p>Personnel assigned to the department are expected to operate with professionalism, integrity, and dedication to the safety of the public. Members of the department shall work together to ensure effective emergency response and protection of life and property.</p>
+                            
+                            <p>The department operates under an organized command structure to ensure incidents are managed efficiently and safely.</p>
                         </div>
                     </div>
 
-                    <div class="sop-section" id="chapter2">
-                        <h3><i class="fas fa-users"></i> Chapter 2: Personnel Management</h3>
+                    <div class="sop-section" id="department-mission">
+                        <h3><i class="fas fa-flag"></i> Department Mission</h3>
                         
                         <div class="sop-subsection">
-                            <h4>2.1 Rank Structure & Responsibilities</h4>
+                            <p>The mission of the San Andreas Fire Department is to protect life, property, and the environment through rapid response, effective emergency operations, and professional public service.</p>
+                            
+                            <p>Personnel shall respond to emergencies, provide medical aid, control hazardous situations, and support the community whenever assistance is required.</p>
+                        </div>
+                    </div>
+
+                    <div class="sop-section" id="command-staff">
+                        <h3><i class="fas fa-users-cog"></i> Command Staff Authority</h3>
+                        
+                        <div class="sop-subsection">
+                            <p>Within the San Andreas Fire Department, the positions of Fire Chief, Deputy Chief, and Assistant Chief serve as the primary leadership of the department. These command staff members are responsible for the direction, oversight, and operational integrity of all department activities across San Andreas.</p>
+                            
+                            <p>The Fire Chief maintains overall authority of the department and establishes departmental policy, operational standards, and long-term planning for emergency services within the state. The Fire Chief has final decision-making authority during departmental matters and large-scale incidents.</p>
+                            
+                            <p>The Deputy Chief oversees major operational functions of the department and assists the Fire Chief in ensuring all divisions operate effectively. The Deputy Chief may assume departmental command when required and plays a key role in large-scale emergency management.</p>
+                            
+                            <p>The Assistant Chief is responsible for supporting operational command, assisting with field coordination, and ensuring department policies and procedures are properly carried out during daily operations.</p>
+                            
+                            <p>Command staff are expected to provide leadership, maintain operational readiness, and ensure the department remains capable of responding to emergencies across the state.</p>
+                        </div>
+                    </div>
+
+                    <div class="sop-section" id="chain-of-command">
+                        <h3><i class="fas fa-sitemap"></i> Chain of Command</h3>
+                        
+                        <div class="sop-subsection">
+                            <p>The San Andreas Fire Department operates under the following rank structure:</p>
+                            
                             <div class="rank-structure">
                                 <div class="rank-category">
                                     <h5>Command Staff</h5>
                                     <ul>
-                                        <li><strong>Fire Chief:</strong> Department administration, budget, policy</li>
-                                        <li><strong>Deputy Chief:</strong> Operations, training, special teams</li>
-                                        <li><strong>Battalion Chief:</strong> Battalion oversight, incident command</li>
+                                        <li><strong>Fire Chief</strong></li>
+                                        <li><strong>Deputy Chief</strong></li>
+                                        <li><strong>Assistant Chief</strong></li>
+                                        <li><strong>Battalion Chief</strong></li>
                                     </ul>
                                 </div>
                                 <div class="rank-category">
                                     <h5>Company Officers</h5>
                                     <ul>
-                                        <li><strong>Captain:</strong> Station management, company command</li>
-                                        <li><strong>Lieutenant:</strong> Crew leadership, tactical operations</li>
+                                        <li><strong>Captain</strong></li>
+                                        <li><strong>Lieutenant</strong></li>
                                     </ul>
                                 </div>
                                 <div class="rank-category">
                                     <h5>Operations Personnel</h5>
                                     <ul>
-                                        <li><strong>Firefighter/Paramedic:</strong> Fire suppression, medical care</li>
-                                        <li><strong>Firefighter/Engineer:</strong> Apparatus operation, maintenance</li>
-                                        <li><strong>Firefighter:</strong> Fire suppression, rescue operations</li>
-                                        <li><strong>Reserve Firefighter:</strong> Support, backup operations</li>
+                                        <li><strong>Firefighter/Paramedic</strong></li>
+                                        <li><strong>Firefighter/Engineer</strong></li>
+                                        <li><strong>Firefighter</strong></li>
+                                        <li><strong>Reserve Firefighter</strong></li>
                                     </ul>
                                 </div>
                                 <div class="rank-category">
                                     <h5>Support Personnel</h5>
                                     <ul>
-                                        <li><strong>Volunteer Firefighter:</strong> Community support, assistance</li>
-                                        <li><strong>Probationary Firefighter:</strong> Training, evaluation</li>
-                                        <li><strong>Cadet:</strong> Youth program, training development</li>
+                                        <li><strong>Volunteer Firefighter</strong></li>
+                                        <li><strong>Probationary Firefighter</strong></li>
+                                        <li><strong>Cadet</strong></li>
                                     </ul>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="sop-subsection">
-                            <h4>2.2 Training Requirements</h4>
-                            <div class="training-grid">
-                                <div class="training-item">
-                                    <i class="fas fa-graduation-cap"></i>
-                                    <strong>Initial Training</strong>
-                                    <ul>
-                                        <li>Firefighter I & II certification</li>
-                                        <li>Hazardous Materials Operations</li>
-                                        <li>Emergency Medical Technician</li>
-                                        <li>Driver/Operator certification</li>
-                                    </ul>
-                                </div>
-                                <div class="training-item">
-                                    <i class="fas fa-sync-alt"></i>
-                                    <strong>Ongoing Training</strong>
-                                    <ul>
-                                        <li>Monthly department drills</li>
-                                        <li>Quarterly live fire exercises</li>
-                                        <li>Annual physical fitness test</li>
-                                        <li>Bi-annual weapons qualification</li>
-                                    </ul>
-                                </div>
-                                <div class="training-item">
-                                    <i class="fas fa-book"></i>
-                                    <strong>Specialized Training</strong>
-                                    <ul>
-                                        <li>Technical Rescue certification</li>
-                                        <li>Wildland firefighting</li>
-                                        <li>Water rescue operations</li>
-                                        <li>Incident Command System</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="sop-subsection">
-                            <h4>2.3 Duty Assignments</h4>
-                            <p>Redwood Fire Station maintains 24/7 coverage with the following assignments:</p>
-                            <ul>
-                                <li><strong>Engine Company:</strong> Fire suppression, water supply</li>
-                                <li><strong>Truck Company:</strong> Rescue, ventilation, forcible entry</li>
-                                <li><strong>Medic Unit:</strong> Emergency medical services, transport</li>
-                                <li><strong>Battalion Chief:</strong> Incident command, oversight</li>
-                            </ul>
+                            
+                            <p>Personnel shall follow lawful orders issued by superior officers during incidents, training, and departmental operations. The chain of command ensures clear leadership and efficient management during emergency responses.</p>
                         </div>
                     </div>
 
-                    <div class="sop-section" id="chapter3">
-                        <h3><i class="fas fa-truck"></i> Chapter 3: Operations</h3>
+                    <div class="sop-section" id="duties-responsibilities">
+                        <h3><i class="fas fa-clipboard-list"></i> Duties and Responsibilities</h3>
                         
                         <div class="sop-subsection">
-                            <h4>3.1 Emergency Response Protocol</h4>
-                            <div class="response-flow">
-                                <div class="flow-step">
-                                    <span class="step-number">1</span>
-                                    <strong>Dispatch Notification</strong>
-                                    <p>Receive call, verify location, determine response level</p>
-                                </div>
-                                <div class="flow-step">
-                                    <span class="step-number">2</span>
-                                    <strong>Unit Response</strong>
-                                    <p>Apparatus response, en route procedures, scene size-up</p>
-                                </div>
-                                <div class="flow-step">
-                                    <span class="step-number">3</span>
-                                    <strong>Scene Assessment</strong>
-                                    <p>360° size-up, hazard identification, resource needs</p>
-                                </div>
-                                <div class="flow-step">
-                                    <span class="step-number">4</span>
-                                    <strong>Incident Command</strong>
-                                    <p>Establish command, implement ICS, assign sectors</p>
-                                </div>
-                                <div class="flow-step">
-                                    <span class="step-number">5</span>
-                                    <strong>Tactical Operations</strong>
-                                    <p>Execute strategy, maintain accountability, ensure safety</p>
-                                </div>
-                                <div class="flow-step">
-                                    <span class="step-number">6</span>
-                                    <strong>Scene Termination</strong>
-                                    <p>Overhaul, investigation, report completion, return to service</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="sop-subsection">
-                            <h4>3.2 Fire Suppression Operations</h4>
-                            <ul>
-                                <li><strong>Initial Attack:</strong> Rapid deployment, aggressive interior attack when safe</li>
-                                <li><strong>Water Supply:</strong> Establish reliable water source, maintain pressure</li>
-                                <li><strong>Ventilation:</strong> Coordinate vertical/horizontal ventilation with fire attack</li>
-                                <li><strong>Search & Rescue:</strong> Primary search before fire attack, secondary after</li>
-                                <li><strong>Overhaul:</strong> Complete extinguishment, check for hot spots</li>
-                            </ul>
-                        </div>
-
-                        <div class="sop-subsection">
-                            <h4>3.3 Station Operations</h4>
-                            <p>Daily station operations include:</p>
-                            <ul>
-                                <li><strong>Duty Crew:</strong> 24-hour shifts, 08:00-08:00</li>
-                                <li><strong>Apparatus Checks:</strong> Daily equipment inspection and maintenance</li>
-                                <li><strong>Station Duties:</strong> Facility maintenance, training, public education</li>
-                                <li><strong>Response Readiness:</strong> Maintain 90-second turnout time</li>
-                            </ul>
+                            <p>All members of the San Andreas Fire Department are responsible for maintaining readiness and professionalism while performing their duties.</p>
+                            
+                            <p>Personnel shall maintain preparedness for emergency response, operate department equipment safely, follow established procedures, and uphold the standards of the department while representing SAFD.</p>
+                            
+                            <p>Officers are responsible for supervising personnel, managing incident scenes, and ensuring that emergency operations are carried out safely and effectively.</p>
+                            
+                            <p>Command staff oversee department operations, major incidents, and ensure the department continues to operate efficiently throughout the state.</p>
                         </div>
                     </div>
 
-                    <div class="sop-section" id="chapter4">
-                        <h3><i class="fas fa-ambulance"></i> Chapter 4: Emergency Medical Services</h3>
+                    <div class="sop-section" id="emergency-operations">
+                        <h3><i class="fas fa-truck"></i> Emergency Response Operations</h3>
                         
                         <div class="sop-subsection">
-                            <h4>4.1 EMS Response Levels</h4>
-                            <div class="ems-levels">
-                                <div class="ems-level">
-                                    <strong>Alpha Response</strong>
-                                    <p>Basic life support, non-emergency transport</p>
-                                </div>
-                                <div class="ems-level">
-                                    <strong>Bravo Response</strong>
-                                    <p>Advanced life support, emergency medical condition</p>
-                                </div>
-                                <div class="ems-level">
-                                    <strong>Charlie Response</strong>
-                                    <p>Life-threatening emergency, lights and siren</p>
-                                </div>
-                                <div class="ems-level">
-                                    <strong>Delta Response</strong>
-                                    <p>Mass casualty incident, multiple resources</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="sop-subsection">
-                            <h4>4.2 Medical Protocols</h4>
-                            <ul>
-                                <li>Follow San Andreas County EMS protocols</li>
-                                <li>Maintain EMT certification and continuing education</li>
-                                <li>Complete patient care reports for all calls</li>
-                                <li>Coordinate with receiving hospitals for patient handoff</li>
-                            </ul>
+                            <p>The San Andreas Fire Department responds to a wide range of emergency incidents across the state.</p>
+                            
+                            <p>These incidents may include structure fires, vehicle fires, medical emergencies, rescues, hazardous situations, and large-scale disasters.</p>
+                            
+                            <p>Structure fires may involve multiple responding units including engine companies, rescue units, and command staff when available. Incident command may be established to organize the scene and maintain firefighter safety.</p>
+                            
+                            <p>Medical incidents involve patient assessment, treatment, and transport when necessary.</p>
+                            
+                            <p>Major incidents such as aircraft crashes, explosions, large fires, or major emergencies may require coordination between multiple responding units and agencies.</p>
+                            
+                            <p>Command officers may establish command and coordinate operations to ensure the incident is handled safely and effectively.</p>
                         </div>
                     </div>
 
-                    <div class="sop-section" id="chapter5">
-                        <h3><i class="fas fa-hard-hat"></i> Chapter 5: Safety & Training</h3>
+                    <div class="sop-section" id="vehicle-operations">
+                        <h3><i class="fas fa-car"></i> Emergency Vehicle Operation and Speed Guidelines</h3>
                         
                         <div class="sop-subsection">
-                            <h4>5.1 Safety Officer Responsibilities</h4>
-                            <ul>
-                                <li>Monitor all operations for safety hazards</li>
-                                <li>Authority to stop unsafe operations</li>
-                                <li>Maintain scene safety documentation</li>
-                                <li>Conduct post-incident safety reviews</li>
-                            </ul>
-                        </div>
-
-                        <div class="sop-subsection">
-                            <h4>5.2 Personal Protective Equipment</h4>
-                            <ul>
-                                <li><strong>Structural Firefighting:</strong> Full turnout gear, SCBA</li>
-                                <li><strong>Wildland Fire:</strong> Flame-resistant clothing, helmet</li>
-                                <li><strong>Medical Calls:</strong> Gloves, eye protection, mask</li>
-                                <li><strong>Vehicle Extrication:</strong> Protective gloves, eye protection</li>
-                            </ul>
+                            <p>Members of the San Andreas Fire Department shall operate all emergency vehicles with caution, professionalism, and awareness of public safety while responding to incidents throughout the state.</p>
+                            
+                            <p>Personnel operating command vehicles or apparatus authorized by a Lieutenant or higher ranking officer shall not exceed ninety miles per hour while traveling on highways or major roadways.</p>
+                            
+                            <p>When operating on standard city streets and normal roadways, emergency vehicles shall not exceed seventy miles per hour during response.</p>
+                            
+                            <p>On narrow roads, rural routes, dirt roads, or areas where visibility and maneuverability are limited, emergency vehicles shall maintain speeds no greater than forty miles per hour.</p>
+                            
+                            <p>Personnel shall slow appropriately when approaching intersections, traffic congestion, or populated areas. Emergency lights and sirens provide the right of way but do not guarantee it. Drivers must ensure intersections are clear before proceeding.</p>
+                            
+                            <p>These guidelines are in place to ensure the safety of department personnel and the public while responding to emergencies.</p>
                         </div>
                     </div>
 
-                    <div class="sop-section" id="chapter6">
-                        <h3><i class="fas fa-radio"></i> Chapter 6: Communications</h3>
+                    <div class="sop-section" id="training-division">
+                        <h3><i class="fas fa-graduation-cap"></i> Training Division</h3>
                         
                         <div class="sop-subsection">
-                            <h4>6.1 Radio Procedures</h4>
-                            <ul>
-                                <li>Use clear text, plain language communications</li>
-                                <li>Maintain radio discipline during incidents</li>
-                                <li>Use tactical channels for fireground operations</li>
-                                <li>Follow proper radio etiquette and procedures</li>
-                            </ul>
-                        </div>
-
-                        <div class="sop-subsection">
-                            <h4>6.2 Incident Reporting</h4>
-                            <ul>
-                                <li>Complete incident reports within 24 hours</li>
-                                <li>Document all significant events and actions</li>
-                                <li>Include patient care reports for medical calls</li>
-                                <li>Submit injury reports for all accidents</li>
-                            </ul>
+                            <p>The San Andreas Fire Department maintains training programs to ensure all personnel remain prepared for emergency response operations.</p>
+                            
+                            <p>New members entering the department may be assigned probationary status while learning department procedures, equipment operation, and emergency response techniques.</p>
+                            
+                            <p>Cadets and probationary firefighters may participate in training exercises and assist under supervision while developing the skills necessary to operate as full members of the department.</p>
+                            
+                            <p>Training may include fire suppression, rescue operations, medical response, and coordinated incidents with other agencies.</p>
                         </div>
                     </div>
 
-                    <div class="sop-section" id="chapter7">
-                        <h3><i class="fas fa-tools"></i> Chapter 7: Vehicle Operations</h3>
+                    <div class="sop-section" id="activity-expectations">
+                        <h3><i class="fas fa-calendar-check"></i> Activity and Service Expectations</h3>
                         
                         <div class="sop-subsection">
-                            <h4>7.1 Apparatus Operation</h4>
-                            <ul>
-                                <li>Only certified personnel may operate apparatus</li>
-                                <li>Complete daily apparatus checks and documentation</li>
-                                <li>Follow all traffic laws during emergency response</li>
-                                <li>Maintain due regard for public safety</li>
-                            </ul>
-                        </div>
-
-                        <div class="sop-subsection">
-                            <h4>7.2 Vehicle Maintenance</h4>
-                            <ul>
-                                <li>Scheduled maintenance per manufacturer guidelines</li>
-                                <li>Immediate repair of safety-related issues</li>
-                                <li>Maintain maintenance records and documentation</li>
-                                <li>Reserve apparatus for major repairs</li>
-                            </ul>
+                            <p>Personnel assigned to the San Andreas Fire Department are expected to maintain availability for emergency response duties.</p>
+                            
+                            <p>Members who are unable to perform duties for extended periods should notify command staff when possible. Department leadership may review assignments to ensure adequate staffing and operational readiness across the state.</p>
                         </div>
                     </div>
 
-                    <div class="sop-section" id="appendix">
-                        <h3><i class="fas fa-file-alt"></i> Appendix: Forms & Procedures</h3>
+                    <div class="sop-section" id="conduct-standards">
+                        <h3><i class="fas fa-gavel"></i> Conduct and Professional Standards</h3>
                         
                         <div class="sop-subsection">
-                            <h4>A.1 Required Forms</h4>
-                            <ul>
-                                <li><strong>Incident Report:</strong> NFIRS 1.0 reporting format</li>
-                                <li><strong>Patient Care Report:</strong> State EMS PCR format</li>
-                                <li><strong>Vehicle Accident Report:</strong> Department accident form</li>
-                                <li><strong>Training Record:</strong> Individual training log</li>
-                                <li><strong>Equipment Check:</strong> Daily apparatus checklist</li>
-                            </ul>
+                            <p>Members of the San Andreas Fire Department shall maintain professional conduct while representing the department.</p>
+                            
+                            <p>Failure to follow department procedures, misconduct, or actions that negatively impact department operations may result in disciplinary action.</p>
+                            
+                            <p>Command staff may issue counseling, warnings, suspension, or removal from the department depending on the severity of the situation.</p>
+                            
+                            <p>These standards are in place to maintain the integrity and effectiveness of the department.</p>
                         </div>
+                    </div>
 
+                    <div class="sop-section" id="interagency-cooperation">
+                        <h3><i class="fas fa-handshake"></i> Interagency Cooperation</h3>
+                        
                         <div class="sop-subsection">
-                            <h4>A.2 Contact Information</h4>
-                            <div class="contact-grid">
-                                <div class="contact-item">
-                                    <strong>Emergency Dispatch</strong>
-                                    <p>911 | Non-emergency: (555) 123-4567</p>
-                                </div>
-                                <div class="contact-item">
-                                    <strong>Fire Chief Office</strong>
-                                    <p>(555) 234-5678</p>
-                                </div>
-                                <div class="contact-item">
-                                    <strong>Redwood Station</strong>
-                                    <p>(555) 345-6789</p>
-                                </div>
-                                <div class="contact-item">
-                                    <strong>Training Division</strong>
-                                    <p>(555) 456-7890</p>
-                                </div>
-                            </div>
+                            <p>The San Andreas Fire Department works alongside other emergency services operating within the state.</p>
+                            
+                            <p>During major incidents, the department may coordinate with law enforcement, medical services, and other response agencies to ensure effective incident management and public safety.</p>
+                            
+                            <p>Clear communication and cooperation between agencies is expected during joint operations.</p>
+                        </div>
+                    </div>
+
+                    <div class="sop-section" id="closing-statement">
+                        <h3><i class="fas fa-award"></i> Closing Statement</h3>
+                        
+                        <div class="sop-subsection">
+                            <p>The San Andreas Fire Department remains committed to protecting the people of San Andreas through professional emergency response and dedicated public service.</p>
+                            
+                            <p>All personnel are expected to uphold the standards of the department and carry out their duties with integrity, responsibility, and commitment to public safety.</p>
                         </div>
                     </div>
 
@@ -953,9 +799,9 @@ class SAFDRoster {
                         <div class="footer-content">
                             <p><strong>Document Information:</strong></p>
                             <ul>
-                                <li>Version: SAFD-SOP-v1.0</li>
-                                <li>Effective Date: March 2, 2026</li>
-                                <li>Next Review: May 1, 2026</li>
+                                <li>Version: SAFD-SOP-v2.0</li>
+                                <li>Effective Date: March 3, 2026</li>
+                                <li>Next Review: June 1, 2026</li>
                                 <li>Approved by: Fire Chief Sam Harlow</li>
                             </ul>
                             <p class="classification"><strong>Classification:</strong> Internal Use Only - Confidential</p>
