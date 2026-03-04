@@ -4,7 +4,7 @@ class SimpleAPI {
         // Using JSONBin.io for free JSON storage
         this.baseUrl = 'https://api.jsonbin.io/v3';
         this.binId = null; // Will be set after first save
-        this.accessKey = '$2a$10$$2a$10$vA2zUIB9qTb4.lINMyF76.XVsD/aTnFiDBmNntapBkOHD2fnVT97q'; // You'll get this from JSONBin.io
+        this.accessKey = '$2a$10$vA2zUIB9qTb4.lINMyF76.XVsD/aTnFiDBmNntapBkOHD2fnVT97q'; // Your JSONBin.io API key
         
         // Fallback to localStorage if API fails
         this.useLocalStorage = false;
@@ -20,21 +20,10 @@ class SimpleAPI {
     
     // Load data from API or localStorage
     async loadData(dataType) {
-        // Try localStorage first for faster loading
+        // Try API first for real-time sync
         const localKey = `safd_${dataType}`;
-        const localData = localStorage.getItem(localKey);
         
-        if (localData) {
-            try {
-                const parsed = JSON.parse(localData);
-                console.log(`📥 ${dataType} loaded from localStorage (fast)`);
-                return parsed;
-            } catch (e) {
-                console.log('⚠️ LocalStorage corrupted, trying API');
-            }
-        }
-        
-        // Try API if we have a bin ID
+        // Always try API first if we have a bin ID
         if (this.binId && !this.useLocalStorage) {
             try {
                 const response = await fetch(`${this.baseUrl}/b/${this.binId}`, {
@@ -45,15 +34,27 @@ class SimpleAPI {
                     const result = await response.json();
                     const data = result.record;
                     
-                    // Save to localStorage for next time
+                    // Save to localStorage for caching
                     localStorage.setItem(localKey, JSON.stringify(data[dataType]));
                     
-                    console.log(`📥 ${dataType} loaded from API`);
+                    console.log(`📥 ${dataType} loaded from API (real-time)`);
                     return data[dataType] || this.getDefaultData(dataType);
                 }
             } catch (error) {
-                console.log('⚠️ API failed, using localStorage');
+                console.log('⚠️ API failed, trying localStorage');
                 this.useLocalStorage = true;
+            }
+        }
+        
+        // Fallback to localStorage
+        const localData = localStorage.getItem(localKey);
+        if (localData) {
+            try {
+                const parsed = JSON.parse(localData);
+                console.log(`📥 ${dataType} loaded from localStorage (cached)`);
+                return parsed;
+            } catch (e) {
+                console.log('⚠️ LocalStorage corrupted, using default');
             }
         }
         

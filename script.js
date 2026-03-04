@@ -1126,23 +1126,32 @@ class SAFDRoster {
 
     // Setup auto-refresh
     setupAutoRefresh() {
-        // Refresh data every 2 minutes
+        // Refresh data every 30 seconds for real-time sync
         setInterval(async () => {
             if (document.visibilityState === 'visible') {
-                console.log('🔄 Auto-refreshing data...');
+                console.log('🔄 Auto-refreshing data for real-time sync...');
                 await this.loadData();
                 this.render();
                 this.renderVehicles();
             }
-        }, 2 * 60 * 1000);
+        }, 30 * 1000); // 30 seconds
         
         // Refresh when page becomes visible
         document.addEventListener('visibilitychange', async () => {
-            if (document.visibilityState === 'visible' && !this.lastSyncTime) {
+            if (document.visibilityState === 'visible') {
+                console.log('🔄 Page visible, refreshing data...');
                 await this.loadData();
                 this.render();
                 this.renderVehicles();
             }
+        });
+        
+        // Refresh when user focuses window
+        window.addEventListener('focus', async () => {
+            console.log('🔄 Window focused, refreshing data...');
+            await this.loadData();
+            this.render();
+            this.renderVehicles();
         });
     }
 
