@@ -517,6 +517,8 @@ class SAFDRoster {
     }
 
     async addMember(data) {
+        console.log('🔍 Adding member:', data);
+        
         // Check for duplicate badge
         if (this.members.some(m => m.badge === data.badge)) {
             this.showToast('A member with this badge number already exists', 'error');
@@ -529,13 +531,22 @@ class SAFDRoster {
             createdAt: new Date().toISOString()
         };
 
+        console.log('🔍 Member object created:', member);
         this.members.push(member);
+        console.log('🔍 Member added to array. Total members:', this.members.length);
         
-        // Save to GitHub
+        // Save to API
+        console.log('🔍 Saving to API...');
         const saved = await this.saveData('members', `Add member: ${member.name}`);
+        console.log('🔍 Save result:', saved);
+        
         if (saved) {
             this.render();
             this.showToast('Member added successfully', 'success');
+        } else {
+            // Remove from array if save failed
+            this.members.pop();
+            console.log('🔍 Member removed due to save failure');
         }
     }
 
@@ -1183,6 +1194,9 @@ class SAFDRoster {
             this.closeAuthModal();
             this.showToast('Authentication successful!', 'success');
             this.render(); // Re-render to enable edit/delete buttons
+            
+            // Execute the pending action (like opening modal)
+            this.executePendingAction();
         } else {
             this.showToast('Invalid password', 'error');
             document.getElementById('password').value = '';
@@ -1263,6 +1277,7 @@ class SAFDRoster {
     // Save data to Simple API
     async saveData(dataType, message) {
         try {
+            console.log('🔍 saveData called for:', dataType, message);
             this.updateSyncStatus('syncing');
             
             let data;
@@ -1281,8 +1296,12 @@ class SAFDRoster {
                 throw new Error('Invalid data type');
             }
             
+            console.log('🔍 Data prepared for API:', data);
+            
             // Save to API
+            console.log('🔍 Calling api.saveData...');
             const success = await this.api.saveData(dataType, data);
+            console.log('🔍 API save result:', success);
             
             if (success) {
                 this.lastSyncTime = new Date();
@@ -1290,11 +1309,10 @@ class SAFDRoster {
                 
                 console.log(`💾 ${dataType} saved successfully`);
                 this.showToast(`${dataType} saved successfully!`, 'success');
+                return true;
             } else {
                 throw new Error('Save failed');
             }
-            
-            return true;
         } catch (error) {
             console.error(`❌ Error saving ${dataType}:`, error);
             this.updateSyncStatus('error');

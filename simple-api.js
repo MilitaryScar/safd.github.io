@@ -65,10 +65,12 @@ class SimpleAPI {
     // Save data to API and localStorage
     async saveData(dataType, data) {
         const timestamp = new Date().toISOString();
+        console.log('🔍 API saveData called:', dataType, data);
         
         // Always save to localStorage first (instant)
         const localKey = `safd_${dataType}`;
         localStorage.setItem(localKey, JSON.stringify(data));
+        console.log('🔍 Saved to localStorage:', localKey);
         
         // Try to save to API if available
         if (!this.useLocalStorage) {
@@ -83,6 +85,7 @@ class SimpleAPI {
                         [dataType]: data,
                         lastUpdated: timestamp
                     };
+                    console.log('🔍 Updating existing bin:', this.binId);
                 } else {
                     // Create new bin
                     url = `${this.baseUrl}/b`;
@@ -91,7 +94,10 @@ class SimpleAPI {
                         [dataType]: data,
                         lastUpdated: timestamp
                     };
+                    console.log('🔍 Creating new bin');
                 }
+                
+                console.log('🔍 API request:', method, url, body);
                 
                 const response = await fetch(url, {
                     method: method,
@@ -99,8 +105,11 @@ class SimpleAPI {
                     body: JSON.stringify(body)
                 });
                 
+                console.log('🔍 API response status:', response.status);
+                
                 if (response.ok) {
                     const result = await response.json();
+                    console.log('🔍 API response data:', result);
                     
                     if (!this.binId) {
                         this.binId = result.metadata.id;
@@ -112,16 +121,19 @@ class SimpleAPI {
                     console.log(`💾 ${dataType} saved to API`);
                     return true;
                 } else {
-                    throw new Error('API save failed');
+                    const errorText = await response.text();
+                    console.log('❌ API error response:', errorText);
+                    throw new Error(`API error: ${response.status} - ${errorText}`);
                 }
             } catch (error) {
-                console.log('⚠️ API save failed, using localStorage only');
+                console.log('⚠️ API save failed:', error.message);
+                console.log('⚠️ Falling back to localStorage only');
                 this.useLocalStorage = true;
                 return true; // Still successful, just using localStorage
             }
         }
         
-        console.log(`💾 ${dataType} saved to localStorage`);
+        console.log(`💾 ${dataType} saved to localStorage only`);
         return true;
     }
     
