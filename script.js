@@ -1272,7 +1272,7 @@ class SAFDRoster {
         }
     }
 
-    // Save data to localStorage (for GitHub Pages compatibility)
+    // Save data to localStorage and trigger file update workflow
     async saveData(dataType, message) {
         try {
             this.updateSyncStatus('syncing');
@@ -1297,14 +1297,19 @@ class SAFDRoster {
             const storageKey = dataType === 'members' ? 'safd_members' : 'safd_vehicles';
             localStorage.setItem(storageKey, JSON.stringify(data));
             
+            // Auto-download the updated JSON file
+            this.downloadUpdatedFile(dataType, data);
+            
+            // Show instructions panel
+            this.showGitHubInstructions();
+            
             this.lastSyncTime = new Date();
             this.updateSyncStatus('success');
             
-            console.log(`💾 ${dataType} saved to localStorage`);
-            console.log(`💡 Note: For GitHub Pages, manually update the JSON files to persist changes`);
+            console.log(`💾 ${dataType} saved and downloaded`);
             
-            // Show info toast about GitHub Pages limitation
-            this.showToast(`${dataType} saved locally. For GitHub Pages, deploy updated JSON files to persist.`, 'info', 8000);
+            // Show detailed instructions
+            this.showToast(`${dataType} updated! File downloaded. Replace in GitHub repo to persist changes.`, 'success', 10000);
             
             return true;
         } catch (error) {
@@ -1313,6 +1318,37 @@ class SAFDRoster {
             this.showToast(`Error saving ${dataType}: ${error.message}`, 'error');
             return false;
         }
+    }
+
+    // Show GitHub instructions panel
+    showGitHubInstructions() {
+        const panel = document.getElementById('github-instructions');
+        if (panel) {
+            panel.style.display = 'block';
+            // Auto-hide after 15 seconds
+            setTimeout(() => {
+                panel.style.display = 'none';
+            }, 15000);
+        }
+    }
+
+    // Download updated JSON file automatically
+    downloadUpdatedFile(dataType, data) {
+        const filename = dataType === 'members' ? 'members.json' : 'vehicles.json';
+        const dataStr = JSON.stringify(data, null, 2);
+        const dataBlob = new Blob([dataStr], { type: 'application/json' });
+        const url = URL.createObjectURL(dataBlob);
+
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = filename;
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        URL.revokeObjectURL(url);
+        console.log(`📁 ${filename} downloaded automatically`);
     }
 
     // Export data to JSON file for manual upload

@@ -897,6 +897,56 @@ select option:checked {
     margin-top: 1rem;
 }
 
+/* GitHub Instructions Panel */
+.github-instructions {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 152, 0, 0.1));
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    border-radius: 0.5rem;
+    margin: 1rem;
+    padding: 1rem;
+    animation: slideDown 0.3s ease-out;
+}
+
+.instructions-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    color: #ffd700;
+}
+
+.instructions-content i {
+    font-size: 1.2rem;
+    margin-top: 0.2rem;
+}
+
+.instructions-content ol {
+    margin: 0.5rem 0;
+    padding-left: 1.5rem;
+    font-size: 0.9rem;
+}
+
+.instructions-content li {
+    margin: 0.3rem 0;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.btn.small {
+    padding: 0.3rem 0.8rem;
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 /* Sync Indicator */
 .sync-indicator {
     display: flex;
