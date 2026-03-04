@@ -184,6 +184,8 @@ class SAFDRoster {
         });
 
         document.getElementById('export')?.addEventListener('click', () => this.exportData());
+        
+        document.getElementById('export-github')?.addEventListener('click', () => this.exportForGitHub('members'));
 
         // Vehicle actions
         document.getElementById('add-vehicle')?.addEventListener('click', () => {
@@ -191,6 +193,8 @@ class SAFDRoster {
         });
 
         document.getElementById('export-vehicles')?.addEventListener('click', () => this.exportVehicles());
+        
+        document.getElementById('export-vehicles-github')?.addEventListener('click', () => this.exportForGitHub('vehicles'));
 
         // Modal events
         document.getElementById('close-modal')?.addEventListener('click', () => this.closeModal());
@@ -1214,26 +1218,48 @@ class SAFDRoster {
         }
     }
 
-    // Load data from localStorage
+    // Load data from JSON files and localStorage
     async loadData() {
         try {
             this.updateSyncStatus('syncing');
             
-            // Load members and vehicles from localStorage
-            const [membersData, vehiclesData] = await Promise.all([
-                this.api.loadData('members'),
-                this.api.loadData('vehicles')
-            ]);
+            // Try to load from JSON files first
+            let membersData, vehiclesData;
+            
+            try {
+                const membersResponse = await fetch('data/members.json');
+                membersData = await membersResponse.json();
+                console.log('📥 Members loaded from JSON file');
+            } catch (error) {
+                console.log('⚠️ JSON file not found, using localStorage');
+                const saved = localStorage.getItem('safd_members');
+                membersData = saved ? JSON.parse(saved) : { members: [] };
+            }
+            
+            try {
+                const vehiclesResponse = await fetch('data/vehicles.json');
+                vehiclesData = await vehiclesResponse.json();
+                console.log('📥 Vehicles loaded from JSON file');
+            } catch (error) {
+                console.log('⚠️ JSON file not found, using localStorage');
+                const saved = localStorage.getItem('safd_vehicles');
+                vehiclesData = saved ? JSON.parse(saved) : { vehicles: [] };
+            }
             
             this.members = membersData.members || [];
             this.vehicles = vehiclesData.vehicles || [];
             
+            // Also save to localStorage for backup
+            localStorage.setItem('safd_members', JSON.stringify(membersData));
+            localStorage.setItem('safd_vehicles', JSON.stringify(vehiclesData));
+            
             this.lastSyncTime = new Date();
             this.updateSyncStatus('success');
             
-            console.log('📥 Data loaded from localStorage:', {
+            console.log('📥 Data loaded:', {
                 members: this.members.length,
-                vehicles: this.vehicles.length
+                vehicles: this.vehicles.length,
+                source: 'JSON files'
             });
         } catch (error) {
             console.error('❌ Error loading data:', error);
@@ -1242,7 +1268,7 @@ class SAFDRoster {
         }
     }
 
-    // Save data to localStorage
+    // Save data to localStorage (for GitHub Pages compatibility)
     async saveData(dataType, message) {
         try {
             this.updateSyncStatus('syncing');
@@ -1263,12 +1289,19 @@ class SAFDRoster {
                 throw new Error('Invalid data type');
             }
             
-            await this.api.saveData(dataType, data);
+            // Save to localStorage
+            const storageKey = dataType === 'members' ? 'safd_members' : 'safd_vehicles';
+            localStorage.setItem(storageKey, JSON.stringify(data));
             
             this.lastSyncTime = new Date();
             this.updateSyncStatus('success');
             
             console.log(`💾 ${dataType} saved to localStorage`);
+            console.log(`💡 Note: For GitHub Pages, manually update the JSON files to persist changes`);
+            
+            // Show info toast about GitHub Pages limitation
+            this.showToast(`${dataType} saved locally. For GitHub Pages, deploy updated JSON files to persist.`, 'info', 8000);
+            
             return true;
         } catch (error) {
             console.error(`❌ Error saving ${dataType}:`, error);
@@ -1278,9 +1311,41 @@ class SAFDRoster {
         }
     }
 
-    // Utility methods
-    generateId() {
-        return Date.now().toString(36) + Math.random().toString(36).substr(2);
+    // Export data to JSON file for manual upload
+    exportForGitHub(dataType) {
+        try {
+            let data, filename;
+            
+            if (dataType === 'members') {
+                data = {
+                    lastUpdated: new Date().toISOString(),
+                    members: this.members
+                };
+                filename = `members_${new Date().toISOString().split('T')[0]}.json`;
+            } else if (dataType === 'vehicles') {
+                data = {
+                    lastUpdated: new Date().toISOString(),
+                    vehicles: this.vehicles
+                };
+                filename = `vehicles_${new Date().toISOString().split('T')[0]}.json`;
+            } else {
+                throw new Error('Invalid data type');
+            }
+            
+            const dataStr = JSON.stringify(data, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            link.click();
+
+            URL.revokeObjectURL(url);
+            this.showToast(`${filename} downloaded for GitHub upload`, 'success');
+        } catch (error) {
+            this.showToast('Error exporting data', 'error');
+        }
     }
 
     escapeHtml(text) {
