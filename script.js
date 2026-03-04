@@ -1,12 +1,15 @@
-// San Andreas Fire Department Roster System
+// San Andreas Fire Department Roster System - GitHub Pages Version
 class SAFDRoster {
     constructor() {
         this.members = [];
         this.vehicles = [];
         this.isAuthenticated = false;
-        this.adminPassword = 'SAFD2024!';
+        this.githubToken = localStorage.getItem(CONFIG.AUTH.TOKEN_KEY);
         this.currentEditId = null;
         this.currentVehicleEditId = null;
+        this.api = new GitHubAPI();
+        this.lastSyncTime = null;
+        this.syncStatus = 'idle'; // idle, syncing, success, error
         
         // Initialize when DOM is ready
         if (document.readyState === 'loading') {
@@ -16,14 +19,14 @@ class SAFDRoster {
         }
     }
 
-    init() {
-        console.log('🚀 Initializing SAFD Roster...');
+    async init() {
+        console.log('🚀 Initializing SAFD Roster (GitHub Pages Version)...');
         
         // Setup data
         this.setupData();
         
-        // Load members
-        this.loadMembers();
+        // Load data from GitHub
+        await this.loadData();
         
         // Bind events
         this.bindEvents();
@@ -35,6 +38,9 @@ class SAFDRoster {
         setTimeout(() => {
             document.getElementById('loading').classList.add('hidden');
         }, 1000);
+        
+        // Setup auto-refresh
+        this.setupAutoRefresh();
         
         console.log('✅ SAFD Roster initialized');
     }
@@ -501,7 +507,7 @@ class SAFDRoster {
         this.closeModal();
     }
 
-    addMember(data) {
+    async addMember(data) {
         // Check for duplicate badge
         if (this.members.some(m => m.badge === data.badge)) {
             this.showToast('A member with this badge number already exists', 'error');
@@ -515,12 +521,16 @@ class SAFDRoster {
         };
 
         this.members.push(member);
-        this.saveMembers();
-        this.render();
-        this.showToast('Member added successfully', 'success');
+        
+        // Save to GitHub
+        const saved = await this.saveData('members', `Add member: ${member.name}`);
+        if (saved) {
+            this.render();
+            this.showToast('Member added successfully', 'success');
+        }
     }
 
-    updateMember(memberId, data) {
+    async updateMember(memberId, data) {
         const index = this.members.findIndex(m => m.id === memberId);
         if (index === -1) return;
 
@@ -530,18 +540,28 @@ class SAFDRoster {
             updatedAt: new Date().toISOString()
         };
 
-        this.saveMembers();
-        this.render();
-        this.showToast('Member updated successfully', 'success');
+        // Save to GitHub
+        const saved = await this.saveData('members', `Update member: ${data.name}`);
+        if (saved) {
+            this.render();
+            this.showToast('Member updated successfully', 'success');
+        }
     }
 
-    deleteMember(memberId) {
+    async deleteMember(memberId) {
         if (!confirm('Are you sure you want to delete this member?')) return;
 
+        const member = this.members.find(m => m.id === memberId);
+        const memberName = member ? member.name : 'Unknown';
+        
         this.members = this.members.filter(m => m.id !== memberId);
-        this.saveMembers();
-        this.render();
-        this.showToast('Member deleted successfully', 'success');
+        
+        // Save to GitHub
+        const saved = await this.saveData('members', `Delete member: ${memberName}`);
+        if (saved) {
+            this.render();
+            this.showToast('Member deleted successfully', 'success');
+        }
     }
 
     exportData() {
@@ -981,7 +1001,7 @@ class SAFDRoster {
         this.closeVehicleModal();
     }
 
-    addVehicle(data) {
+    async addVehicle(data) {
         const vehicle = {
             ...data,
             id: this.generateId(),
@@ -989,12 +1009,16 @@ class SAFDRoster {
         };
 
         this.vehicles.push(vehicle);
-        this.saveVehicles();
-        this.renderVehicles();
-        this.showToast('Vehicle added successfully', 'success');
+        
+        // Save to GitHub
+        const saved = await this.saveData('vehicles', `Add vehicle: ${vehicle.name}`);
+        if (saved) {
+            this.renderVehicles();
+            this.showToast('Vehicle added successfully', 'success');
+        }
     }
 
-    updateVehicle(vehicleId, data) {
+    async updateVehicle(vehicleId, data) {
         const index = this.vehicles.findIndex(v => v.id === vehicleId);
         if (index === -1) return;
 
@@ -1004,18 +1028,28 @@ class SAFDRoster {
             updatedAt: new Date().toISOString()
         };
 
-        this.saveVehicles();
-        this.renderVehicles();
-        this.showToast('Vehicle updated successfully', 'success');
+        // Save to GitHub
+        const saved = await this.saveData('vehicles', `Update vehicle: ${data.name}`);
+        if (saved) {
+            this.renderVehicles();
+            this.showToast('Vehicle updated successfully', 'success');
+        }
     }
 
-    deleteVehicle(vehicleId) {
+    async deleteVehicle(vehicleId) {
         if (!confirm('Are you sure you want to delete this vehicle?')) return;
 
+        const vehicle = this.vehicles.find(v => v.id === vehicleId);
+        const vehicleName = vehicle ? vehicle.name : 'Unknown';
+        
         this.vehicles = this.vehicles.filter(v => v.id !== vehicleId);
-        this.saveVehicles();
-        this.renderVehicles();
-        this.showToast('Vehicle deleted successfully', 'success');
+        
+        // Save to GitHub
+        const saved = await this.saveData('vehicles', `Delete vehicle: ${vehicleName}`);
+        if (saved) {
+            this.renderVehicles();
+            this.showToast('Vehicle deleted successfully', 'success');
+        }
     }
 
     exportVehicles() {
@@ -1036,28 +1070,71 @@ class SAFDRoster {
         }
     }
 
-    // Storage methods for vehicles
-    loadVehicles() {
-        try {
-            const saved = localStorage.getItem('safd_vehicles');
-            if (saved) {
-                this.vehicles = JSON.parse(saved);
-            } else {
-                this.vehicles = [];
+    // Update sync status UI
+    updateSyncStatus(status) {
+        this.syncStatus = status;
+        
+        const syncIndicator = document.getElementById('sync-indicator');
+        if (syncIndicator) {
+            syncIndicator.className = `sync-indicator ${status}`;
+            
+            const icon = syncIndicator.querySelector('i');
+            const text = syncIndicator.querySelector('span');
+            
+            switch (status) {
+                case 'syncing':
+                    icon.className = 'fas fa-sync fa-spin';
+                    text.textContent = 'Syncing...';
+                    break;
+                case 'success':
+                    icon.className = 'fas fa-check-circle';
+                    text.textContent = 'Synced';
+                    if (this.lastSyncTime) {
+                        text.textContent += ` (${this.formatTime(this.lastSyncTime)})`;
+                    }
+                    break;
+                case 'error':
+                    icon.className = 'fas fa-exclamation-triangle';
+                    text.textContent = 'Sync Error';
+                    break;
+                default:
+                    icon.className = 'fas fa-cloud';
+                    text.textContent = 'Ready';
             }
-        } catch (error) {
-            console.error('Error loading vehicles:', error);
-            this.vehicles = [];
         }
     }
 
-    saveVehicles() {
-        try {
-            localStorage.setItem('safd_vehicles', JSON.stringify(this.vehicles));
-        } catch (error) {
-            console.error('Error saving vehicles:', error);
-            this.showToast('Error saving vehicle data', 'error');
-        }
+    // Format time for display
+    formatTime(date) {
+        const now = new Date();
+        const diff = Math.floor((now - date) / 1000);
+        
+        if (diff < 60) return 'just now';
+        if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+        if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+        return date.toLocaleDateString();
+    }
+
+    // Setup auto-refresh
+    setupAutoRefresh() {
+        // Refresh data every 2 minutes
+        setInterval(async () => {
+            if (document.visibilityState === 'visible') {
+                console.log('🔄 Auto-refreshing data...');
+                await this.loadData();
+                this.render();
+                this.renderVehicles();
+            }
+        }, 2 * 60 * 1000);
+        
+        // Refresh when page becomes visible
+        document.addEventListener('visibilitychange', async () => {
+            if (document.visibilityState === 'visible' && !this.lastSyncTime) {
+                await this.loadData();
+                this.render();
+                this.renderVehicles();
+            }
+        });
     }
 
     // Authentication methods
@@ -1078,10 +1155,25 @@ class SAFDRoster {
         document.getElementById('auth-modal').classList.remove('active');
     }
 
-    authenticate() {
+    async authenticate() {
         const password = document.getElementById('password')?.value;
         
-        if (password === this.adminPassword) {
+        if (password === CONFIG.AUTH.ADMIN_PASSWORD) {
+            // Check if GitHub token is provided
+            const token = document.getElementById('github-token')?.value;
+            
+            if (token) {
+                this.githubToken = token;
+                this.api.setToken(token);
+                
+                // Test the token
+                const isValid = await this.api.testAuth();
+                if (!isValid) {
+                    this.showToast('Invalid GitHub token', 'error');
+                    return;
+                }
+            }
+            
             this.isAuthenticated = true;
             sessionStorage.setItem('safd_auth', 'true');
             this.updateAuthUI();
@@ -1096,7 +1188,10 @@ class SAFDRoster {
 
     logout() {
         this.isAuthenticated = false;
+        this.githubToken = null;
+        this.api.setToken(null);
         sessionStorage.removeItem('safd_auth');
+        localStorage.removeItem(CONFIG.AUTH.TOKEN_KEY);
         this.updateAuthUI();
         this.showToast('Logged out successfully', 'info');
         this.render();
@@ -1105,6 +1200,12 @@ class SAFDRoster {
     checkAuth() {
         const auth = sessionStorage.getItem('safd_auth');
         this.isAuthenticated = auth === 'true';
+        
+        // Restore GitHub token if available
+        if (this.githubToken) {
+            this.api.setToken(this.githubToken);
+        }
+        
         this.updateAuthUI();
     }
 
@@ -1139,30 +1240,74 @@ class SAFDRoster {
         }
     }
 
-    // Storage methods
-    loadMembers() {
+    // Load data from GitHub
+    async loadData() {
         try {
-            const saved = localStorage.getItem('safd_members');
-            if (saved) {
-                this.members = JSON.parse(saved);
-            } else {
-                this.members = [];
-            }
+            this.updateSyncStatus('syncing');
+            
+            // Load members and vehicles in parallel
+            const [membersData, vehiclesData] = await Promise.all([
+                this.api.getFile(CONFIG.DATA_FILES.MEMBERS),
+                this.api.getFile(CONFIG.DATA_FILES.VEHICLES)
+            ]);
+            
+            this.members = membersData.members || [];
+            this.vehicles = vehiclesData.vehicles || [];
+            
+            this.lastSyncTime = new Date();
+            this.updateSyncStatus('success');
+            
+            console.log('📥 Data loaded from GitHub:', {
+                members: this.members.length,
+                vehicles: this.vehicles.length
+            });
         } catch (error) {
-            console.error('Error loading members:', error);
-            this.members = [];
+            console.error('❌ Error loading data:', error);
+            this.updateSyncStatus('error');
+            this.showToast('Error loading data from GitHub', 'error');
         }
-        
-        this.loadVehicles();
-        this.checkAuth();
     }
 
-    saveMembers() {
+    // Save data to GitHub
+    async saveData(dataType, message) {
+        if (!this.githubToken) {
+            this.showToast('Authentication required. Please login with GitHub token.', 'error');
+            return false;
+        }
+
         try {
-            localStorage.setItem('safd_members', JSON.stringify(this.members));
+            this.updateSyncStatus('syncing');
+            
+            let filePath, data;
+            
+            if (dataType === 'members') {
+                filePath = CONFIG.DATA_FILES.MEMBERS;
+                data = {
+                    lastUpdated: new Date().toISOString(),
+                    members: this.members
+                };
+            } else if (dataType === 'vehicles') {
+                filePath = CONFIG.DATA_FILES.VEHICLES;
+                data = {
+                    lastUpdated: new Date().toISOString(),
+                    vehicles: this.vehicles
+                };
+            } else {
+                throw new Error('Invalid data type');
+            }
+            
+            await this.api.updateFile(filePath, data, message);
+            
+            this.lastSyncTime = new Date();
+            this.updateSyncStatus('success');
+            
+            console.log(`💾 ${dataType} saved to GitHub`);
+            return true;
         } catch (error) {
-            console.error('Error saving members:', error);
-            this.showToast('Error saving data', 'error');
+            console.error(`❌ Error saving ${dataType}:`, error);
+            this.updateSyncStatus('error');
+            this.showToast(`Error saving ${dataType}: ${error.message}`, 'error');
+            return false;
         }
     }
 

@@ -897,19 +897,45 @@ select option:checked {
     margin-top: 1rem;
 }
 
-/* Read-only indicator */
-.member-card.read-only::before {
-    content: '🔒 View Only';
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    background: rgba(0, 0, 0, 0.8);
-    color: #ffd700;
-    padding: 0.25rem 0.5rem;
-    border-radius: 0.25rem;
+/* Sync Indicator */
+.sync-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 0.5rem;
     font-size: 0.8rem;
-    font-weight: 500;
-    z-index: 10;
+    color: rgba(255, 255, 255, 0.8);
+    transition: all 0.3s ease;
+}
+
+.sync-indicator.syncing {
+    border-color: rgba(255, 152, 0, 0.5);
+    color: #ff9800;
+}
+
+.sync-indicator.success {
+    border-color: rgba(76, 175, 80, 0.5);
+    color: #4caf50;
+}
+
+.sync-indicator.error {
+    border-color: rgba(244, 67, 54, 0.5);
+    color: #f44336;
+}
+
+.sync-indicator i {
+    font-size: 0.9rem;
+}
+
+.auth-form small {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.6);
+    font-style: italic;
 }
 
 /* Modal */
