@@ -21,6 +21,9 @@ class SAFDRoster {
     async init() {
         console.log('🚀 Initializing SAFD Roster (GitHub Pages Version)...');
         
+        // Check authentication first
+        this.checkAuth();
+        
         // Setup data
         this.setupData();
         
@@ -1167,6 +1170,7 @@ class SAFDRoster {
             this.updateAuthUI();
             this.closeAuthModal();
             this.showToast('Authentication successful!', 'success');
+            this.render(); // Re-render to enable edit/delete buttons
         } else {
             this.showToast('Invalid password', 'error');
             document.getElementById('password').value = '';
@@ -1178,7 +1182,7 @@ class SAFDRoster {
         sessionStorage.removeItem('safd_auth');
         this.updateAuthUI();
         this.showToast('Logged out successfully', 'info');
-        this.render();
+        this.render(); // Re-render to disable edit/delete buttons
     }
 
     checkAuth() {
