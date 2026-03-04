@@ -1272,7 +1272,7 @@ class SAFDRoster {
         }
     }
 
-    // Save data to localStorage and trigger file update workflow
+    // Save data to localStorage and trigger GitHub editor workflow
     async saveData(dataType, message) {
         try {
             this.updateSyncStatus('syncing');
@@ -1297,19 +1297,13 @@ class SAFDRoster {
             const storageKey = dataType === 'members' ? 'safd_members' : 'safd_vehicles';
             localStorage.setItem(storageKey, JSON.stringify(data));
             
-            // Auto-download the updated JSON file
-            this.downloadUpdatedFile(dataType, data);
-            
-            // Show instructions panel
-            this.showGitHubInstructions();
+            // Open GitHub editor instead of downloading
+            this.openGitHubEdit(dataType, data);
             
             this.lastSyncTime = new Date();
             this.updateSyncStatus('success');
             
-            console.log(`💾 ${dataType} saved and downloaded`);
-            
-            // Show detailed instructions
-            this.showToast(`${dataType} updated! File downloaded. Replace in GitHub repo to persist changes.`, 'success', 10000);
+            console.log(`💾 ${dataType} saved and GitHub editor opened`);
             
             return true;
         } catch (error) {
@@ -1320,19 +1314,60 @@ class SAFDRoster {
         }
     }
 
-    // Show GitHub instructions panel
-    showGitHubInstructions() {
+    // Create GitHub direct edit URL
+    createGitHubEditUrl(dataType) {
+        const filePath = dataType === 'members' ? 'data/members.json' : 'data/vehicles.json';
+        
+        // GitHub's web interface URL for editing files
+        return `https://github.com/${CONFIG.GITHUB.OWNER}/${CONFIG.GITHUB.REPO}/edit/${CONFIG.GITHUB.BRANCH}/${filePath}`;
+    }
+
+    // Open GitHub edit page with pre-filled data
+    openGitHubEdit(dataType, data) {
+        const editUrl = this.createGitHubEditUrl(dataType);
+        
+        // Copy data to clipboard for easy pasting
+        const dataStr = JSON.stringify(data, null, 2);
+        navigator.clipboard.writeText(dataStr).then(() => {
+            console.log('📋 Data copied to clipboard');
+            this.showToast('Data copied! Opening GitHub editor...', 'info', 5000);
+        }).catch(() => {
+            console.log('⚠️ Could not copy to clipboard');
+            this.showToast('Could not copy to clipboard. Please copy manually.', 'warning', 5000);
+        });
+        
+        // Open GitHub edit page in new tab
+        window.open(editUrl, '_blank');
+        
+        // Show detailed instructions
+        this.showGitHubEditInstructions(dataType);
+    }
+
+    // Show GitHub edit instructions
+    showGitHubEditInstructions(dataType) {
         const panel = document.getElementById('github-instructions');
         if (panel) {
+            const content = panel.querySelector('.instructions-content div');
+            content.innerHTML = `
+                <strong>GitHub Editor Opened:</strong>
+                <ol>
+                    <li>GitHub editor opened in new tab with your file</li>
+                    <li>Data copied to clipboard - paste into editor</li>
+                    <li>Click "Commit changes" at bottom</li>
+                    <li>GitHub Pages updates automatically</li>
+                </ol>
+                <button class="btn small" onclick="document.getElementById('github-instructions').style.display='none'">Got it!</button>
+            `;
             panel.style.display = 'block';
-            // Auto-hide after 15 seconds
+            
+            // Auto-hide after 20 seconds
             setTimeout(() => {
                 panel.style.display = 'none';
-            }, 15000);
+            }, 20000);
         }
     }
 
-    // Download updated JSON file automatically
+    // Download updated JSON file automatically (backup method)
     downloadUpdatedFile(dataType, data) {
         const filename = dataType === 'members' ? 'members.json' : 'vehicles.json';
         const dataStr = JSON.stringify(data, null, 2);
