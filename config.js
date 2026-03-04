@@ -16,9 +16,7 @@ const CONFIG = {
     
     // Authentication (for admin users)
     AUTH: {
-        // Store GitHub token securely - this should be provided by admin users
-        TOKEN_KEY: 'safd_github_token',
-        ADMIN_PASSWORD: 'SAFD2024!' // Keep this secure
+        ADMIN_PASSWORD: 'SAFD2024!' // Change this to your desired admin password
     },
     
     // Cache settings

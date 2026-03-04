@@ -1,31 +1,18 @@
-// GitHub API Integration for SAFD Roster
+// GitHub API Integration for SAFD Roster - Simplified Version
 class GitHubAPI {
     constructor() {
         this.baseUrl = CONFIG.GITHUB.API_URL;
         this.owner = CONFIG.GITHUB.OWNER;
         this.repo = CONFIG.GITHUB.REPO;
         this.branch = CONFIG.GITHUB.BRANCH;
-        this.token = localStorage.getItem(CONFIG.AUTH.TOKEN_KEY);
     }
 
-    // Set authentication token
-    setToken(token) {
-        this.token = token;
-        localStorage.setItem(CONFIG.AUTH.TOKEN_KEY, token);
-    }
-
-    // Get authentication headers
+    // Get authentication headers (public access only)
     getHeaders() {
-        const headers = {
+        return {
             'Accept': 'application/vnd.github.v3+json',
             'Content-Type': 'application/json'
         };
-        
-        if (this.token) {
-            headers['Authorization'] = `token ${this.token}`;
-        }
-        
-        return headers;
     }
 
     // Fetch file content from repository
@@ -58,45 +45,21 @@ class GitHubAPI {
         }
     }
 
-    // Update file content in repository
-    async updateFile(filePath, data, message) {
-        if (!this.token) {
-            throw new Error('Authentication required. Please set GitHub token.');
-        }
-
+    // Save data to localStorage (simplified approach)
+    async saveData(dataType, data) {
         try {
-            // Get current file info
-            const currentData = await this.getFileRaw(filePath);
-            
-            const url = `${this.baseUrl}/repos/${this.owner}/${this.repo}/contents/${filePath}`;
-            const content = btoa(JSON.stringify(data, null, 2));
-            
-            const body = {
-                message: message || `Update ${filePath}`,
-                content: content,
-                branch: this.branch
+            const storageKey = dataType === 'members' ? 'safd_members' : 'safd_vehicles';
+            const dataWithTimestamp = {
+                ...data,
+                lastUpdated: new Date().toISOString()
             };
-
-            // If file exists, include SHA
-            if (currentData && currentData.sha) {
-                body.sha = currentData.sha;
-            }
-
-            const response = await fetch(url, {
-                method: 'PUT',
-                headers: this.getHeaders(),
-                body: JSON.stringify(body)
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(`GitHub API Error: ${errorData.message || response.statusText}`);
-            }
-
-            return await response.json();
+            
+            localStorage.setItem(storageKey, JSON.stringify(dataWithTimestamp));
+            console.log(`💾 ${dataType} saved to localStorage`);
+            return true;
         } catch (error) {
-            console.error(`Error updating file ${filePath}:`, error);
-            throw error;
+            console.error(`❌ Error saving ${dataType}:`, error);
+            return false;
         }
     }
 
@@ -138,42 +101,34 @@ class GitHubAPI {
         return {};
     }
 
-    // Test authentication
-    async testAuth() {
-        if (!this.token) {
-            return false;
-        }
-
+    // Load data from localStorage (simplified approach)
+    async loadData(dataType) {
         try {
-            const url = `${this.baseUrl}/user`;
-            const response = await fetch(url, {
-                headers: this.getHeaders()
-            });
-            return response.ok;
-        } catch (error) {
-            console.error('Authentication test failed:', error);
-            return false;
-        }
-    }
-
-    // Get repository info
-    async getRepoInfo() {
-        try {
-            const url = `${this.baseUrl}/repos/${this.owner}/${this.repo}`;
-            const response = await fetch(url, {
-                headers: this.getHeaders()
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            const storageKey = dataType === 'members' ? 'safd_members' : 'safd_vehicles';
+            const saved = localStorage.getItem(storageKey);
+            
+            if (saved) {
+                const data = JSON.parse(saved);
+                console.log(`📥 ${dataType} loaded from localStorage`);
+                return data;
+            } else {
+                // Return default structure
+                const defaultData = dataType === 'members' 
+                    ? { lastUpdated: new Date().toISOString(), members: [] }
+                    : { lastUpdated: new Date().toISOString(), vehicles: [] };
+                console.log(`📝 Using default ${dataType} structure`);
+                return defaultData;
             }
-
-            return await response.json();
         } catch (error) {
-            console.error('Error fetching repository info:', error);
-            return null;
+            console.error(`❌ Error loading ${dataType}:`, error);
+            // Return default structure on error
+            const defaultData = dataType === 'members' 
+                ? { lastUpdated: new Date().toISOString(), members: [] }
+                : { lastUpdated: new Date().toISOString(), vehicles: [] };
+            return defaultData;
         }
     }
+
 }
 
 // Export for use in other modules

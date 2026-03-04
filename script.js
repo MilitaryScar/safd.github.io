@@ -4,7 +4,6 @@ class SAFDRoster {
         this.members = [];
         this.vehicles = [];
         this.isAuthenticated = false;
-        this.githubToken = localStorage.getItem(CONFIG.AUTH.TOKEN_KEY);
         this.currentEditId = null;
         this.currentVehicleEditId = null;
         this.api = new GitHubAPI();
@@ -1159,27 +1158,11 @@ class SAFDRoster {
         const password = document.getElementById('password')?.value;
         
         if (password === CONFIG.AUTH.ADMIN_PASSWORD) {
-            // Check if GitHub token is provided
-            const token = document.getElementById('github-token')?.value;
-            
-            if (token) {
-                this.githubToken = token;
-                this.api.setToken(token);
-                
-                // Test the token
-                const isValid = await this.api.testAuth();
-                if (!isValid) {
-                    this.showToast('Invalid GitHub token', 'error');
-                    return;
-                }
-            }
-            
             this.isAuthenticated = true;
             sessionStorage.setItem('safd_auth', 'true');
             this.updateAuthUI();
             this.closeAuthModal();
             this.showToast('Authentication successful!', 'success');
-            this.render();
         } else {
             this.showToast('Invalid password', 'error');
             document.getElementById('password').value = '';
@@ -1188,10 +1171,7 @@ class SAFDRoster {
 
     logout() {
         this.isAuthenticated = false;
-        this.githubToken = null;
-        this.api.setToken(null);
         sessionStorage.removeItem('safd_auth');
-        localStorage.removeItem(CONFIG.AUTH.TOKEN_KEY);
         this.updateAuthUI();
         this.showToast('Logged out successfully', 'info');
         this.render();
@@ -1200,12 +1180,6 @@ class SAFDRoster {
     checkAuth() {
         const auth = sessionStorage.getItem('safd_auth');
         this.isAuthenticated = auth === 'true';
-        
-        // Restore GitHub token if available
-        if (this.githubToken) {
-            this.api.setToken(this.githubToken);
-        }
-        
         this.updateAuthUI();
     }
 
@@ -1240,15 +1214,15 @@ class SAFDRoster {
         }
     }
 
-    // Load data from GitHub
+    // Load data from localStorage
     async loadData() {
         try {
             this.updateSyncStatus('syncing');
             
-            // Load members and vehicles in parallel
+            // Load members and vehicles from localStorage
             const [membersData, vehiclesData] = await Promise.all([
-                this.api.getFile(CONFIG.DATA_FILES.MEMBERS),
-                this.api.getFile(CONFIG.DATA_FILES.VEHICLES)
+                this.api.loadData('members'),
+                this.api.loadData('vehicles')
             ]);
             
             this.members = membersData.members || [];
@@ -1257,37 +1231,30 @@ class SAFDRoster {
             this.lastSyncTime = new Date();
             this.updateSyncStatus('success');
             
-            console.log('📥 Data loaded from GitHub:', {
+            console.log('📥 Data loaded from localStorage:', {
                 members: this.members.length,
                 vehicles: this.vehicles.length
             });
         } catch (error) {
             console.error('❌ Error loading data:', error);
             this.updateSyncStatus('error');
-            this.showToast('Error loading data from GitHub', 'error');
+            this.showToast('Error loading data', 'error');
         }
     }
 
-    // Save data to GitHub
+    // Save data to localStorage
     async saveData(dataType, message) {
-        if (!this.githubToken) {
-            this.showToast('Authentication required. Please login with GitHub token.', 'error');
-            return false;
-        }
-
         try {
             this.updateSyncStatus('syncing');
             
-            let filePath, data;
+            let data;
             
             if (dataType === 'members') {
-                filePath = CONFIG.DATA_FILES.MEMBERS;
                 data = {
                     lastUpdated: new Date().toISOString(),
                     members: this.members
                 };
             } else if (dataType === 'vehicles') {
-                filePath = CONFIG.DATA_FILES.VEHICLES;
                 data = {
                     lastUpdated: new Date().toISOString(),
                     vehicles: this.vehicles
@@ -1296,12 +1263,12 @@ class SAFDRoster {
                 throw new Error('Invalid data type');
             }
             
-            await this.api.updateFile(filePath, data, message);
+            await this.api.saveData(dataType, data);
             
             this.lastSyncTime = new Date();
             this.updateSyncStatus('success');
             
-            console.log(`💾 ${dataType} saved to GitHub`);
+            console.log(`💾 ${dataType} saved to localStorage`);
             return true;
         } catch (error) {
             console.error(`❌ Error saving ${dataType}:`, error);
