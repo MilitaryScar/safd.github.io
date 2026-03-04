@@ -1,4 +1,4 @@
-// San Andreas Fire Department Roster System - GitHub Pages Version
+// San Andreas Fire Department Roster System - Simple Version
 class SAFDRoster {
     constructor() {
         this.members = [];
@@ -6,9 +6,12 @@ class SAFDRoster {
         this.isAuthenticated = false;
         this.currentEditId = null;
         this.currentVehicleEditId = null;
-        this.api = new GitHubAPI();
+        this.api = new SimpleAPI();
         this.lastSyncTime = null;
         this.syncStatus = 'idle'; // idle, syncing, success, error
+        
+        // Initialize API
+        this.api.init();
         
         // Initialize when DOM is ready
         if (document.readyState === 'loading') {
@@ -19,7 +22,7 @@ class SAFDRoster {
     }
 
     async init() {
-        console.log('🚀 Initializing SAFD Roster (GitHub Pages Version)...');
+        console.log('🚀 Initializing SAFD Roster (Simple Version)...');
         
         // Check authentication first
         this.checkAuth();
@@ -27,7 +30,7 @@ class SAFDRoster {
         // Setup data
         this.setupData();
         
-        // Load data from GitHub
+        // Load data from API
         await this.loadData();
         
         // Bind events
@@ -1222,40 +1225,16 @@ class SAFDRoster {
         }
     }
 
-    // Load data from JSON files and localStorage
+    // Load data from Simple API
     async loadData() {
         try {
             this.updateSyncStatus('syncing');
             
-            // Try to load from JSON files first
-            let membersData, vehiclesData;
+            // Load all data from API
+            const data = await this.api.loadAllData();
             
-            try {
-                const membersResponse = await fetch('data/members.json');
-                membersData = await membersResponse.json();
-                console.log('📥 Members loaded from JSON file');
-            } catch (error) {
-                console.log('⚠️ JSON file not found, using localStorage');
-                const saved = localStorage.getItem('safd_members');
-                membersData = saved ? JSON.parse(saved) : { members: [] };
-            }
-            
-            try {
-                const vehiclesResponse = await fetch('data/vehicles.json');
-                vehiclesData = await vehiclesResponse.json();
-                console.log('📥 Vehicles loaded from JSON file');
-            } catch (error) {
-                console.log('⚠️ JSON file not found, using localStorage');
-                const saved = localStorage.getItem('safd_vehicles');
-                vehiclesData = saved ? JSON.parse(saved) : { vehicles: [] };
-            }
-            
-            this.members = membersData.members || [];
-            this.vehicles = vehiclesData.vehicles || [];
-            
-            // Also save to localStorage for backup
-            localStorage.setItem('safd_members', JSON.stringify(membersData));
-            localStorage.setItem('safd_vehicles', JSON.stringify(vehiclesData));
+            this.members = data.members || [];
+            this.vehicles = data.vehicles || [];
             
             this.lastSyncTime = new Date();
             this.updateSyncStatus('success');
@@ -1263,7 +1242,7 @@ class SAFDRoster {
             console.log('📥 Data loaded:', {
                 members: this.members.length,
                 vehicles: this.vehicles.length,
-                source: 'JSON files'
+                source: 'Simple API'
             });
         } catch (error) {
             console.error('❌ Error loading data:', error);
@@ -1272,7 +1251,7 @@ class SAFDRoster {
         }
     }
 
-    // Save data to localStorage and trigger GitHub editor workflow
+    // Save data to Simple API
     async saveData(dataType, message) {
         try {
             this.updateSyncStatus('syncing');
@@ -1293,17 +1272,18 @@ class SAFDRoster {
                 throw new Error('Invalid data type');
             }
             
-            // Save to localStorage
-            const storageKey = dataType === 'members' ? 'safd_members' : 'safd_vehicles';
-            localStorage.setItem(storageKey, JSON.stringify(data));
+            // Save to API
+            const success = await this.api.saveData(dataType, data);
             
-            // Open GitHub editor instead of downloading
-            this.openGitHubEdit(dataType, data);
-            
-            this.lastSyncTime = new Date();
-            this.updateSyncStatus('success');
-            
-            console.log(`💾 ${dataType} saved and GitHub editor opened`);
+            if (success) {
+                this.lastSyncTime = new Date();
+                this.updateSyncStatus('success');
+                
+                console.log(`💾 ${dataType} saved successfully`);
+                this.showToast(`${dataType} saved successfully!`, 'success');
+            } else {
+                throw new Error('Save failed');
+            }
             
             return true;
         } catch (error) {
